@@ -14,7 +14,7 @@ export class ExportService {
       );
     }
 
-    const rows = assignments.map((assignment) => [
+    const rows: string[][] = assignments.map((assignment) => [
       assignment.employee.name,
       assignment.employee.email,
       assignment.secretChild.name,
@@ -22,7 +22,7 @@ export class ExportService {
     ]);
 
     return XLSX.utils.aoa_to_sheet([
-      ASSIGNMENT_COLUMNS,
+      [...ASSIGNMENT_COLUMNS],
       ...rows,
     ]);
   }
