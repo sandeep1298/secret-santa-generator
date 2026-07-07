@@ -87,6 +87,60 @@ npm run build
 npm run test
 ```
 
+
+
+## Test Results
+
+The application has been tested using **Vitest** to validate the core business logic and file-processing functionality.
+
+### Test Execution
+
+Run the test suite using:
+
+```bash
+npm run test
+```
+
+### Automated Test Summary
+
+| Metric | Result |
+|--------|--------|
+| Test Framework | Vitest v3.2.7 |
+| Test Files | 3 Passed / 3 |
+| Test Cases | 11 Passed / 11 |
+| Overall Status | ✅ All Tests Passed |
+
+### Test Coverage
+
+#### SecretSantaService
+- Generates valid Secret Santa assignments.
+- Prevents employees from being assigned to themselves.
+- Prevents repeating previous year's assignments when previous-year data is provided.
+- Ensures each Secret Child is assigned exactly once.
+- Handles impossible assignment scenarios gracefully.
+
+#### FileParserService
+- Parses employee Excel and CSV files.
+- Parses previous-year Secret Santa assignment files.
+- Validates required columns.
+- Handles invalid file formats and malformed data.
+
+#### ExportService
+- Generates the output CSV file in the required format.
+- Validates exported assignment data.
+
+### Manual Validation
+
+The following application workflows were also verified manually:
+
+- ✅ Upload employee file.
+- ✅ Upload previous-year assignment file (optional).
+- ✅ Generate valid Secret Santa assignments.
+- ✅ Verify previous-year pairings are not repeated.
+- ✅ Download generated assignment CSV.
+- ✅ Validate error handling for invalid input files.
+
+
 ## Usage Walkthrough
 
 1. Open the app and select **Start Assignment**.
