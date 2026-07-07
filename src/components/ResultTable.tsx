@@ -26,7 +26,7 @@ export function ResultTable({ assignments, onDownload }: ResultTableProps) {
           <h3 className="text-2xl font-black text-slate-950">Secret Santa Results</h3>
         </div>
         <Button onClick={onDownload} variant="secondary">
-          Download CSV
+          Download
         </Button>
       </div>
       <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white/80">

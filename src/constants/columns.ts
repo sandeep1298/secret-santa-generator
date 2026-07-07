@@ -7,4 +7,4 @@ export const ASSIGNMENT_COLUMNS = [
   "Secret_Child_EmailID"
 ] as const;
 
-export const OUTPUT_FILE_NAME = "secret-santa-result-current-year.csv";
+export const OUTPUT_FILE_NAME = "secret-santa-result-current-year.xlsx";

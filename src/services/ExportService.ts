@@ -1,53 +1,69 @@
 import { ASSIGNMENT_COLUMNS, OUTPUT_FILE_NAME } from "../constants/columns";
 import type { SecretSantaAssignment } from "../models/SecretSantaAssignment";
 import { SecretSantaError } from "../utils/errors";
+import * as XLSX from "xlsx";
 
 export class ExportService {
   /**
-   * Converts generated Secret Santa assignments into the required CSV file content.
+   * Converts generated Secret Santa assignments into Excel worksheet data.
    */
-  createCsv(assignments: readonly SecretSantaAssignment[]): string {
+  private createWorksheet(assignments: readonly SecretSantaAssignment[]) {
     if (assignments.length === 0) {
-      throw new SecretSantaError("No Secret Santa assignments available to export");
+      throw new SecretSantaError(
+        "No Secret Santa assignments available to export"
+      );
     }
 
     const rows = assignments.map((assignment) => [
       assignment.employee.name,
       assignment.employee.email,
       assignment.secretChild.name,
-      assignment.secretChild.email
+      assignment.secretChild.email,
     ]);
 
-    return [ASSIGNMENT_COLUMNS, ...rows]
-      .map((row) => row.map((value) => this.escapeCsvValue(value)).join(","))
-      .join("\n");
+    return XLSX.utils.aoa_to_sheet([
+      ASSIGNMENT_COLUMNS,
+      ...rows,
+    ]);
   }
 
   /**
-   * Creates a browser download for the generated CSV using the required output filename.
+   * Creates a browser download for the generated XLSX file.
    */
-  downloadCsv(assignments: readonly SecretSantaAssignment[], fileName = OUTPUT_FILE_NAME) {
-    const csv = this.createCsv(assignments);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  downloadCsv(
+    assignments: readonly SecretSantaAssignment[],
+    fileName = OUTPUT_FILE_NAME.replace(".csv", ".xlsx")
+  ) {
+    const worksheet = this.createWorksheet(assignments);
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Secret Santa"
+    );
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
 
     link.href = url;
     link.download = fileName;
+
     document.body.append(link);
     link.click();
+
     link.remove();
     URL.revokeObjectURL(url);
-  }
-
-  /**
-   * Escapes CSV values that contain commas, quotes, or line breaks.
-   */
-  private escapeCsvValue(value: string) {
-    if (/[",\n\r]/.test(value)) {
-      return `"${value.replaceAll('"', '""')}"`;
-    }
-
-    return value;
   }
 }
